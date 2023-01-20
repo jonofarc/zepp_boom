@@ -8,4 +8,6 @@ AppSideService({
   onDestroy() {
     console.log('app side service invoke onDestroy')
   }
+
+  
 })

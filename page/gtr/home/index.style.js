@@ -10,7 +10,7 @@ export const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = getDeviceInfo()
 export const BOMB = {
   text: getText('Ó'),
   x: px(42),
-  y: px(100),
+  y: px(-100),
   w: DEVICE_WIDTH - px(42) * 2,
   h: px(100),
   color: 0xffffff,
