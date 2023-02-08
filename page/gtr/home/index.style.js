@@ -31,12 +31,24 @@ export const PLAYER = {
 
 export const SCORE = {
 	text: getText("0"),
-	x: px(180),
-	y: px(0),
+	x: px(100),
+	y: px(20),
 	w: DEVICE_WIDTH - px(42) * 2,
 	h: px(100),
 	color: 0xffffff,
 	text_size: px(24),
+	align_h: hmUI.align.CENTER_H,
+	text_style: hmUI.text_style.WRAP,
+};
+
+export const BYNAME = {
+	text: getText("Jonathan M."),
+	x: px(0),
+	y: px(20),
+	w: DEVICE_WIDTH - px(42) * 2,
+	h: px(100),
+	color: 0xffffff,
+	text_size: px(12),
 	align_h: hmUI.align.CENTER_H,
 	text_style: hmUI.text_style.WRAP,
 };

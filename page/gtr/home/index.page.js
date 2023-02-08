@@ -2,7 +2,7 @@ import * as hmUI from "@zos/ui";
 import { getDeviceInfo, SCREEN_SHAPE_ROUND } from "@zos/device";
 import { onDigitalCrown, KEY_HOME } from "@zos/interaction";
 import { log as Logger } from "@zos/utils";
-import { BOMB, PLAYER, SCORE } from "./index.style";
+import { BOMB, PLAYER, SCORE, BYNAME } from "./index.style";
 import { GameObject } from "../classes/game_object";
 import * as utils from "../utils/utils.js";
 
@@ -21,13 +21,17 @@ let playerScore = 0;
 let playerX = 42;
 let playerY = 350;
 
-let bombSpawnY = 0;
+let bombSpawnY = 40;
 
 let bomb1Y = bombSpawnY;
 let bomb1X = 42;
 
 let scoreTextWidget = hmUI.createWidget(hmUI.widget.TEXT, {
 	...SCORE,
+});
+
+let byNameTextWidget = hmUI.createWidget(hmUI.widget.TEXT, {
+	...BYNAME,
 });
 
 let playerGameObject = new GameObject(
@@ -60,6 +64,8 @@ Page({
 
 		playerGameObject.widget;
 		bomb1GameObject.widget;
+		scoreTextWidget;
+		byNameTextWidget;
 
 		this.mainLoop();
 	},
@@ -82,9 +88,6 @@ Page({
 					playerX = -150;
 				}
 				this.updatePlayerPoss(playerX);
-
-				//  logger.debug('playerGameObject.hitbox.x1 = '+playerGameObject.hitbox.x1);
-				//  logger.debug('playerGameObject.hitbox.x2 = '+playerGameObject.hitbox.x2);
 			}
 		};
 
