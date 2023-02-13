@@ -18,13 +18,25 @@ const deviceHeight = getDeviceInfo().height;
 
 let playerScore = 0;
 
-let playerX = 42;
+//value to increase bomb speed after a set amount are cacthed
+speedAddition = 0;
+
+let playerWidth = 42;
+let playerX = 12;
 let playerY = 350;
+let payerMaxX = 200;
+let playerMinX = -140;
 
 let bombSpawnY = 40;
 
 let bomb1Y = bombSpawnY;
-let bomb1X = 42;
+let bomb1X = 8;
+
+let bomb2Y = bombSpawnY - 100;
+let bomb2X = 8;
+
+let bomb3Y = bombSpawnY - 200;
+let bomb3X = 8;
 
 let scoreTextWidget = hmUI.createWidget(hmUI.widget.TEXT, {
 	...SCORE,
@@ -38,7 +50,7 @@ let playerGameObject = new GameObject(
 	"player",
 	playerX,
 	playerY,
-	10,
+	40 + playerWidth / 2,
 	20,
 	hmUI.createWidget(hmUI.widget.TEXT, { ...PLAYER })
 );
@@ -46,7 +58,28 @@ let bomb1GameObject = new GameObject(
 	"bomb1",
 	bomb1X,
 	bomb1Y,
+	15,
 	10,
+	hmUI.createWidget(hmUI.widget.TEXT, {
+		...BOMB,
+	})
+);
+let bomb2GameObject = new GameObject(
+	"bomb2",
+	bomb2X,
+	bomb2Y,
+	15,
+	10,
+	hmUI.createWidget(hmUI.widget.TEXT, {
+		...BOMB,
+	})
+);
+
+let bomb3GameObject = new GameObject(
+	"bomb3",
+	bomb3X,
+	bomb3Y,
+	15,
 	10,
 	hmUI.createWidget(hmUI.widget.TEXT, {
 		...BOMB,
@@ -64,29 +97,20 @@ Page({
 
 		playerGameObject.widget;
 		bomb1GameObject.widget;
+		bomb2GameObject.widget;
+		bomb3GameObject.widget;
 		scoreTextWidget;
 		byNameTextWidget;
-
-		this.mainLoop();
-	},
-
-	onDestroy() {
-		offDigitalCrown();
-
-		logger.debug("page onDestroy invoked");
-	},
-
-	mainLoop() {
-		logger.log("mainLoop");
 
 		const playerControl = (key, degree) => {
 			if (key === KEY_HOME) {
 				playerX += degree * 2;
-				if (playerX > 200) {
-					playerX = 200;
-				} else if (playerX < -150) {
-					playerX = -150;
+				if (playerX > payerMaxX) {
+					playerX = payerMaxX;
+				} else if (playerX < playerMinX) {
+					playerX = playerMinX;
 				}
+				logger.debug(playerX.toString());
 				this.updatePlayerPoss(playerX);
 			}
 		};
@@ -95,55 +119,87 @@ Page({
 			callback: playerControl,
 		});
 
-		const timer1 = timer.createTimer(
-			10,
-			10,
+		var counter = setInterval(this.mainLoop, 10);
+	},
 
-			//main game loop
-			function (option) {
-				//check if there is a collision
-				const bomb1Collision = utils.collisionChecker(
-					playerGameObject,
-					bomb1GameObject
-				);
+	onDestroy() {
+		offDigitalCrown();
 
-				if (bomb1Collision == true) {
-					bomb1Y = bombSpawnY;
-					playerScore++;
-					scoreTextWidget.setProperty(hmUI.prop.MORE, {
-						text: playerScore.toString(),
-					});
+		logger.debug("page onDestroy invoked");
+	},
 
-					//update  bomb X possition for new spawn
-					bomb1X = utils.randomIntFromInterval(-150, 200);
-					bomb1GameObject.widget.setProperty(hmUI.prop.MORE, {
-						x: bomb1X,
-					});
-				}
+	//Main game loop
+	mainLoop() {
+		function updateBombPoss(bombGameObject, bombX, bombY) {
+			bombGameObject.widget.setProperty(hmUI.prop.MORE, {
+				x: bombX,
+				y: bombY,
+			});
+			bombGameObject.hitbox.setPoss(bombX, bombY);
 
-				//updateBombPoss();
-				bomb1GameObject.widget.setProperty(hmUI.prop.MORE, {
-					y: bomb1Y,
+			if (bombGameObject.name == bomb1GameObject.name) {
+				bomb1Y = bombY;
+				bomb1X = bombX;
+			} else if (bombGameObject.name == bomb2GameObject.name) {
+				bomb2Y = bombY;
+				bomb2X = bombX;
+			} else if (bombGameObject.name == bomb3GameObject.name) {
+				bomb3Y = bombY;
+				bomb3X = bombX;
+			}
+		}
+
+		function checkBombReachedEnd(bombGameObject, bombX, bombY) {
+			if (bombY > 400) {
+				bombY = bombSpawnY;
+				playerScore = 0;
+				scoreTextWidget.setProperty(hmUI.prop.MORE, {
+					text: playerScore.toString(),
 				});
-				bomb1GameObject.hitbox.setPoss(bomb1X, bomb1Y);
 
-				bomb1Y += 2;
-				if (bomb1Y > 400) {
-					bomb1Y = bombSpawnY;
-					playerScore = 0;
-					scoreTextWidget.setProperty(hmUI.prop.MORE, {
-						text: playerScore.toString(),
-					});
+				//update  bomb X possition for new spawn
+				bombX = utils.randomIntFromInterval(-150, 200);
+				updateBombPoss(bombGameObject, bombX, bombY);
+			}
+		}
 
-					//update  bomb X possition for new spawn
-					bomb1X = utils.randomIntFromInterval(-150, 200);
-					bomb1GameObject.widget.setProperty(hmUI.prop.MORE, {
-						x: bomb1X,
-					});
-				}
-			},
-			{ bombY: BOMB.y.toString() }
-		);
+		function checkBombPlayerCollision(bombGameObject, bombX, bombY) {
+			const bombCollision = utils.collisionChecker(
+				playerGameObject,
+				bombGameObject
+			);
+
+			if (bombCollision == true) {
+				bombY = bombSpawnY;
+				playerScore++;
+				scoreTextWidget.setProperty(hmUI.prop.MORE, {
+					text: playerScore.toString(),
+				});
+
+				//update  bomb X possition for new spawn
+				bombX = utils.randomIntFromInterval(-150, 200);
+				updateBombPoss(bombGameObject, bombX, bombY);
+			}
+		}
+
+		//check if there is a collision
+		checkBombPlayerCollision(bomb1GameObject, bomb1X, bomb1Y);
+		checkBombPlayerCollision(bomb2GameObject, bomb2X, bomb2Y);
+		checkBombPlayerCollision(bomb3GameObject, bomb3X, bomb3Y);
+
+		//increase bomb speed with each passing bomb catched
+		speedAddition = 0.5 * playerScore;
+		bomb1Y += 2 + speedAddition;
+		bomb2Y += 2 + speedAddition;
+		bomb3Y += 2 + speedAddition;
+
+		updateBombPoss(bomb1GameObject, bomb1X, bomb1Y);
+		updateBombPoss(bomb2GameObject, bomb2X, bomb2Y);
+		updateBombPoss(bomb3GameObject, bomb3X, bomb3Y);
+
+		checkBombReachedEnd(bomb1GameObject, bomb1X, bomb1Y);
+		checkBombReachedEnd(bomb2GameObject, bomb2X, bomb2Y);
+		checkBombReachedEnd(bomb3GameObject, bomb3X, bomb3Y);
 	},
 
 	updatePlayerPoss(playerX) {
@@ -151,13 +207,9 @@ Page({
 			x: playerX,
 		});
 
-		playerGameObject.hitbox.setPoss(playerX, playerGameObject.hitbox.y2);
-	},
-
-	updateBombPoss() {
-		// bombGameObject.widget.setProperty(hmUI.prop.MORE, {
-		//     y: bombY
-		//  })
-		logger.debug("$$$$$$$$$$$$$$$ got here");
+		playerGameObject.hitbox.setPoss(
+			playerX - playerWidth / 2,
+			playerGameObject.hitbox.y2
+		);
 	},
 });

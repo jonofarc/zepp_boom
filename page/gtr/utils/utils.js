@@ -4,7 +4,6 @@ import { log as Logger } from "@zos/utils";
 const logger = Logger.getLogger("helloworld");
 
 export function collisionChecker(gameObject1, gameObject2) {
-	let collision = false;
 	let collisionX = false;
 	let collisionY = false;
 
@@ -26,12 +25,7 @@ export function collisionChecker(gameObject1, gameObject2) {
 		collisionY = true;
 	}
 
-	if (collisionX && collisionY) {
-		collision = true;
-		logger.debug("collision" + collision);
-	}
-
-	return collision;
+	return collisionX && collisionY;
 }
 
 export function randomIntFromInterval(min, max) {
