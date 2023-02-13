@@ -188,7 +188,7 @@ Page({
 		checkBombPlayerCollision(bomb3GameObject, bomb3X, bomb3Y);
 
 		//increase bomb speed with each passing bomb catched
-		speedAddition = 0.5 * playerScore;
+		speedAddition = 0.05 * playerScore;
 		bomb1Y += 2 + speedAddition;
 		bomb2Y += 2 + speedAddition;
 		bomb3Y += 2 + speedAddition;
