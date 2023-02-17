@@ -1,10 +1,11 @@
 import * as hmUI from "@zos/ui";
 import { getDeviceInfo, SCREEN_SHAPE_ROUND } from "@zos/device";
 import { log as Logger } from "@zos/utils";
-import { push } from "@zos/router";
-import { START_BUTTON, TITLE_SCREEN, BYNAME } from "./index.style";
+import { YES_BUTTON, NO_BUTTON, GAME_OVER_TEXT } from "./index.style";
+import { GameObject } from "../classes/game_object";
+import { home, replace, back } from "@zos/router";
 
-/* //how to show a toast
+/* //how to show a toast 
 	hmUI.showToast({
 						text: "bomb stopped",
 					});
@@ -14,22 +15,23 @@ const logger = Logger.getLogger("helloworld");
 const deviceWidth = getDeviceInfo().width;
 const deviceHeight = getDeviceInfo().height;
 
-let titleScreen = hmUI.createWidget(hmUI.widget.IMG, {
-	...TITLE_SCREEN,
+let gameOverText = hmUI.createWidget(hmUI.widget.TEXT, {
+	...GAME_OVER_TEXT,
 });
-
-let menuButton = hmUI.createWidget(hmUI.widget.BUTTON, {
-	...START_BUTTON,
+let yesButton = hmUI.createWidget(hmUI.widget.BUTTON, {
+	...YES_BUTTON,
 	click_func: (button_widget) => {
-		push({
+		replace({
 			url: "page/gtr/home/game.page",
 			params: "type=1",
 		});
 	},
 });
-
-let byNameTextWidget = hmUI.createWidget(hmUI.widget.TEXT, {
-	...BYNAME,
+let noButton = hmUI.createWidget(hmUI.widget.BUTTON, {
+	...NO_BUTTON,
+	click_func: (button_widget) => {
+		back();
+	},
 });
 
 Page({

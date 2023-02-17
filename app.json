@@ -29,7 +29,9 @@
       "module": {
         "page": {
           "pages": [
-            "page/gtr/home/index.page"
+            "page/gtr/home/index.page",
+            "page/gtr/home/game.page",
+            "page/gtr/home/game_over.page"
           ],
           "window": {
             "navigationBarBackgroundColor": "#ffffff",
