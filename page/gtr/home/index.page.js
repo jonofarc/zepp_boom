@@ -2,7 +2,7 @@ import * as hmUI from "@zos/ui";
 import { getDeviceInfo, SCREEN_SHAPE_ROUND } from "@zos/device";
 import { onDigitalCrown, KEY_HOME } from "@zos/interaction";
 import { log as Logger } from "@zos/utils";
-import { BOMB, PLAYER, SCORE, BYNAME } from "./index.style";
+import { BOMB1, BOMB2, BOMB3, PLAYER, SCORE, BYNAME } from "./index.style";
 import { GameObject } from "../classes/game_object";
 import * as utils from "../utils/utils.js";
 
@@ -21,22 +21,38 @@ let playerScore = 0;
 //value to increase bomb speed after a set amount are cacthed
 speedAddition = 0;
 
-let playerWidth = 42;
-let playerX = 12;
+let playerWidth = 90;
+let playerX = 200;
 let playerY = 350;
-let payerMaxX = 200;
-let playerMinX = -140;
+let payerMaxX = deviceWidth - playerWidth;
+let playerMinX = 0;
+
+let speedIncrement = 0.02;
 
 let bombSpawnY = 40;
+let bombSpawnMargin = 25; // MArgin where bombs will not spawn on the side to acount for poor visibility on the edges of the watch
+
+let bombWidth = 25;
+let bombHeight = 25;
+let bombSpacing = 100; //distance between bombs
 
 let bomb1Y = bombSpawnY;
-let bomb1X = 8;
+let bomb1X = utils.randomIntFromInterval(
+	0 + bombWidth,
+	deviceWidth - bombWidth
+);
 
-let bomb2Y = bombSpawnY - 100;
-let bomb2X = 8;
+let bomb2Y = bomb1Y - 100;
+let bomb2X = utils.randomIntFromInterval(
+	0 + bombWidth,
+	deviceWidth - bombWidth
+);
 
-let bomb3Y = bombSpawnY - 200;
-let bomb3X = 8;
+let bomb3Y = bomb2Y - 100;
+let bomb3X = utils.randomIntFromInterval(
+	0 + bombWidth,
+	deviceWidth - bombWidth
+);
 
 let scoreTextWidget = hmUI.createWidget(hmUI.widget.TEXT, {
 	...SCORE,
@@ -50,28 +66,28 @@ let playerGameObject = new GameObject(
 	"player",
 	playerX,
 	playerY,
-	40 + playerWidth / 2,
+	playerWidth,
 	20,
-	hmUI.createWidget(hmUI.widget.TEXT, { ...PLAYER })
+	hmUI.createWidget(hmUI.widget.IMG, { ...PLAYER })
 );
 let bomb1GameObject = new GameObject(
 	"bomb1",
 	bomb1X,
 	bomb1Y,
-	15,
-	10,
-	hmUI.createWidget(hmUI.widget.TEXT, {
-		...BOMB,
+	bombWidth,
+	bombHeight,
+	hmUI.createWidget(hmUI.widget.IMG, {
+		...BOMB1,
 	})
 );
 let bomb2GameObject = new GameObject(
 	"bomb2",
 	bomb2X,
 	bomb2Y,
-	15,
-	10,
-	hmUI.createWidget(hmUI.widget.TEXT, {
-		...BOMB,
+	bombWidth,
+	bombHeight,
+	hmUI.createWidget(hmUI.widget.IMG, {
+		...BOMB2,
 	})
 );
 
@@ -79,10 +95,10 @@ let bomb3GameObject = new GameObject(
 	"bomb3",
 	bomb3X,
 	bomb3Y,
-	15,
-	10,
-	hmUI.createWidget(hmUI.widget.TEXT, {
-		...BOMB,
+	bombWidth,
+	bombHeight,
+	hmUI.createWidget(hmUI.widget.IMG, {
+		...BOMB3,
 	})
 );
 
@@ -110,7 +126,7 @@ Page({
 				} else if (playerX < playerMinX) {
 					playerX = playerMinX;
 				}
-				logger.debug(playerX.toString());
+
 				this.updatePlayerPoss(playerX);
 			}
 		};
@@ -150,7 +166,7 @@ Page({
 		}
 
 		function checkBombReachedEnd(bombGameObject, bombX, bombY) {
-			if (bombY > 400) {
+			if (bombY > 450) {
 				bombY = bombSpawnY;
 				playerScore = 0;
 				scoreTextWidget.setProperty(hmUI.prop.MORE, {
@@ -158,7 +174,10 @@ Page({
 				});
 
 				//update  bomb X possition for new spawn
-				bombX = utils.randomIntFromInterval(-150, 200);
+				bombX = utils.randomIntFromInterval(
+					0 + bombWidth + bombSpawnMargin,
+					deviceWidth - bombWidth - bombSpawnMargin
+				);
 				updateBombPoss(bombGameObject, bombX, bombY);
 			}
 		}
@@ -177,7 +196,10 @@ Page({
 				});
 
 				//update  bomb X possition for new spawn
-				bombX = utils.randomIntFromInterval(-150, 200);
+				bombX = utils.randomIntFromInterval(
+					0 + bombWidth + bombSpawnMargin,
+					deviceWidth - bombWidth - bombSpawnMargin
+				);
 				updateBombPoss(bombGameObject, bombX, bombY);
 			}
 		}
@@ -188,10 +210,18 @@ Page({
 		checkBombPlayerCollision(bomb3GameObject, bomb3X, bomb3Y);
 
 		//increase bomb speed with each passing bomb catched
-		speedAddition = 0.05 * playerScore;
+		speedAddition = speedIncrement * playerScore;
 		bomb1Y += 2 + speedAddition;
 		bomb2Y += 2 + speedAddition;
 		bomb3Y += 2 + speedAddition;
+
+		//make sure there is a minuimun px spacing between bombs if the previous bomb is below
+		if (bomb1Y > bomb2Y && bomb2Y + bombSpacing > bomb1Y) {
+			bomb2Y = bomb1Y - bombSpacing;
+		}
+		if (bomb2Y > bomb3Y && bomb3Y + bombSpacing > bomb2Y) {
+			bomb3Y = bomb2Y - bombSpacing;
+		}
 
 		updateBombPoss(bomb1GameObject, bomb1X, bomb1Y);
 		updateBombPoss(bomb2GameObject, bomb2X, bomb2Y);
@@ -207,9 +237,6 @@ Page({
 			x: playerX,
 		});
 
-		playerGameObject.hitbox.setPoss(
-			playerX - playerWidth / 2,
-			playerGameObject.hitbox.y2
-		);
+		playerGameObject.hitbox.setPoss(playerX, playerGameObject.hitbox.y2);
 	},
 });
