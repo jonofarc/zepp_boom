@@ -130,3 +130,14 @@ export const GAME_OVER_TEXT = {
 	text_size: px(24),
 	align_h: hmUI.align.CENTER_H,
 };
+
+export const SCORE_TEXT = {
+	text: getText("No Score Defined"),
+	x: px(0),
+	y: px(80),
+	w: DEVICE_WIDTH,
+	h: px(300),
+	color: 0xffffff,
+	text_size: px(48),
+	align_h: hmUI.align.CENTER_H,
+};

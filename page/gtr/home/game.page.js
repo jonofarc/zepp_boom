@@ -164,7 +164,7 @@ Page({
 		function checkBombReachedEnd(bombGameObject, bombX, bombY) {
 			if (bombY > 450) {
 				bombY = bombSpawnY;
-				playerScore = 0;
+
 				scoreTextWidget.setProperty(hmUI.prop.MORE, {
 					text: playerScore.toString(),
 				});
@@ -177,7 +177,7 @@ Page({
 				updateBombPoss(bombGameObject, bombX, bombY);
 				replace({
 					url: "page/gtr/home/game_over.page",
-					params: "type=1",
+					params: playerScore.toString(),
 				});
 			}
 		}
