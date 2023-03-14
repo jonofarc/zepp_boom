@@ -166,7 +166,7 @@ Page({
 				bombY = bombSpawnY;
 
 				scoreTextWidget.setProperty(hmUI.prop.MORE, {
-					text: playerScore.toString(),
+					text: "Score: " + playerScore.toString(),
 				});
 
 				//update  bomb X possition for new spawn
@@ -192,7 +192,7 @@ Page({
 				bombY = bombSpawnY;
 				playerScore++;
 				scoreTextWidget.setProperty(hmUI.prop.MORE, {
-					text: playerScore.toString(),
+					text: "Score: " + playerScore.toString(),
 				});
 
 				//update  bomb X possition for new spawn

@@ -58,9 +58,9 @@ export const BOMB3 = {
 };
 
 export const SCORE = {
-	text: getText("0"),
-	x: px(100),
-	y: px(20),
+	text: getText("Score: 0"),
+	x: px(20),
+	y: px(420),
 	w: DEVICE_WIDTH - px(42) * 2,
 	h: px(100),
 	color: 0xffffff,

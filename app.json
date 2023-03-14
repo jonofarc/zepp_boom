@@ -1,7 +1,7 @@
 {
   "configVersion": "v2",
   "app": {
-    "appId": 24674,
+    "appId": 1020032,
     "appName": "Neon Kaboom",
     "appType": "app",
     "version": {
@@ -36,7 +36,7 @@
           "window": {
             "navigationBarBackgroundColor": "#ffffff",
             "navigationBarTextStyle": "black",
-            "navigationBarTitleText": "Hello World",
+            "navigationBarTitleText": "Neon Kaboom",
             "backgroundColor": "#eeeeee",
             "backgroundTextStyle": "light"
           }
@@ -63,7 +63,7 @@
   },
   "i18n": {
     "en-US": {
-      "appName": "Hello World"
+      "appName": "Neon Kaboom" 
     }
   },
   "defaultLanguage": "en-US"
