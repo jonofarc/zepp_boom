@@ -9,6 +9,7 @@ import {
 } from "./index.style";
 import { GameObject } from "../classes/game_object";
 import { home, replace, back } from "@zos/router";
+import { setScrollLock } from "@zos/page";
 
 /* //how to show a toast 
 	hmUI.showToast({
@@ -45,10 +46,12 @@ let noButton = hmUI.createWidget(hmUI.widget.BUTTON, {
 Page({
 	build() {
 		logger.debug("page build invoked");
+		setScrollLock({
+			lock: true,
+		});
 	},
 	onInit(params) {
 		logger.debug("page onInit invoked");
-		logger.debug("11111111111111111111111111111" + params);
 		scoreText.setProperty(hmUI.prop.MORE, {
 			text: params + " Bombs",
 		});

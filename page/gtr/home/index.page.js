@@ -3,6 +3,7 @@ import { getDeviceInfo, SCREEN_SHAPE_ROUND } from "@zos/device";
 import { log as Logger } from "@zos/utils";
 import { push } from "@zos/router";
 import { START_BUTTON, TITLE_SCREEN, BYNAME } from "./index.style";
+import { setScrollLock } from "@zos/page";
 
 /* //how to show a toast
 	hmUI.showToast({
@@ -35,6 +36,9 @@ let byNameTextWidget = hmUI.createWidget(hmUI.widget.TEXT, {
 Page({
 	build() {
 		logger.debug("page build invoked");
+		setScrollLock({
+			lock: true,
+		});
 	},
 	onInit() {
 		logger.debug("page onInit invoked");
