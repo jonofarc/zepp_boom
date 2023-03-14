@@ -6,6 +6,7 @@ import { BOMB1, BOMB2, BOMB3, PLAYER, SCORE } from "./index.style";
 import { GameObject } from "../classes/game_object";
 import * as utils from "../utils/utils.js";
 import { replace } from "@zos/router";
+import { setScrollLock } from "@zos/page";
 
 /* //how to show a toast
 	hmUI.showToast({
@@ -32,6 +33,7 @@ let speedIncrement = 0.02;
 
 let bombSpawnY = 40;
 let bombSpawnMargin = 25; // MArgin where bombs will not spawn on the side to acount for poor visibility on the edges of the watch
+let endZone = 420;
 
 let bombWidth = 25;
 let bombHeight = 25;
@@ -102,6 +104,9 @@ let bomb3GameObject = new GameObject(
 Page({
 	build() {
 		logger.debug("page build invoked");
+		setScrollLock({
+			lock: true,
+		});
 	},
 	onInit() {
 		logger.debug("page onInit invoked");
@@ -162,7 +167,7 @@ Page({
 		}
 
 		function checkBombReachedEnd(bombGameObject, bombX, bombY) {
-			if (bombY > 450) {
+			if (bombY > endZone) {
 				bombY = bombSpawnY;
 
 				scoreTextWidget.setProperty(hmUI.prop.MORE, {
